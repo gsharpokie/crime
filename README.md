@@ -1,6 +1,6 @@
 # Is Crime Up?
 
-An interactive comparison of what Americans say about crime and what crime victimization surveys found. Students make three guesses, then see 35 years of Gallup polls next to the violent victimization rate. By Gwen Sharp, as a companion to Chapter 13 (Deviance) of *A Sociology Experiment*.
+An interactive comparison of what Americans say about crime and what crime victimization surveys found. Students make three guesses, then see 35 years of Gallup polls next to the violent victimization rate. By Gwen Sharp.
 
 **Live site:** https://gsharpokie.github.io/crime/
 
