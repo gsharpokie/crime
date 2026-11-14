@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is Crime Up?</title>
+<meta name="description" content="Most years, most Americans say crime is rising. Guess first, then compare 35 years of Gallup polls with what crime victimization surveys actually found.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gsharpokie.github.io/crime/">
+<meta property="og:title" content="Is Crime Up?">
+<meta property="og:description" content="Most years, most Americans say crime is rising. Guess first, then compare 35 years of Gallup polls with what crime victimization surveys actually found.">
+<meta property="og:image" content="https://gsharpokie.github.io/crime/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Is Crime Up? Two charts: the share of Americans saying crime is rising stays high while violent victimization falls about 70% since 1993.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@gsharpokie">
+<meta name="twitter:title" content="Is Crime Up?">
+<meta name="twitter:description" content="Most years, most Americans say crime is rising. Guess first, then compare 35 years of Gallup polls with what crime victimization surveys actually found.">
+<meta name="twitter:image" content="https://gsharpokie.github.io/crime/preview.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23202833'/%3E%3Cpath d='M5 9 L14 13 L21 10 L27 12' fill='none' stroke='%23e0912f' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M5 15 L12 20 L20 23 L27 24' fill='none' stroke='%237fc4bd' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* Layout: one column. Three guess-first questions, then a two-panel chart on a shared timeline
+   (what people said on top, what happened below), then context and discussion. */
+:root {
+  --paper: #f4f4f1;
+  --surface: #ffffff;
+  --ink: #1d242c;
+  --muted: #5b6570;
+  --line: #d8dbd6;
+  --said: #c46d0e;
+  --said-soft: #e9b46f;
+  --real: #1e6f68;
+  --focus: #c46d0e;
+  --display: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --body: Aptos, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #13171c; --surface: #1c2229; --ink: #ecefee; --muted: #a3adb6; --line: #333c45;
+    --said: #f0a34a; --said-soft: #a8743a; --real: #6ccabf; --focus: #f0a34a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #13171c; --surface: #1c2229; --ink: #ecefee; --muted: #a3adb6; --line: #333c45;
+  --said: #f0a34a; --said-soft: #a8743a; --real: #6ccabf; --focus: #f0a34a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1.05rem; line-height: 1.55; }
+.wrap { max-width: 48rem; margin: 0 auto; padding: 2rem 1rem 3rem; display: grid; gap: 1.6rem; }
+header { display: grid; gap: .45rem; }
+.kicker { font-size: .85rem; color: var(--muted); }
+.kicker a, footer a, .notes a, .prose a { color: var(--ink); }
+h1 { font-family: var(--display); font-weight: 900; font-size: clamp(2.3rem, 8vw, 3.6rem); line-height: 1; margin: 0; letter-spacing: -.02em; }
+h2 { font-family: var(--display); font-weight: 800; font-size: 1.45rem; line-height: 1.15; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 700; font-size: 1.1rem; margin: 0; }
+.lede { margin: 0; max-width: 62ch; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1.4rem; display: grid; gap: .9rem; }
+.step { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.q { font-size: 1.15rem; font-weight: 600; margin: 0; }
+.choices { display: flex; flex-wrap: wrap; gap: .5rem; }
+.choices button, .actions button { font: inherit; font-weight: 600; padding: .6rem 1rem; border-radius: 10px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+.choices button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.choices button:disabled { cursor: default; }
+.actions button.primary { background: var(--ink); color: var(--paper); }
+button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.guess-row { display: flex; align-items: center; gap: 1rem; }
+.guess-row input { flex: 1; accent-color: var(--said); height: 2rem; }
+.guess-val { font-family: var(--display); font-weight: 900; font-size: 2rem; min-width: 4.5ch; text-align: right; color: var(--said); font-variant-numeric: tabular-nums; }
+.answer { border-left: 4px solid var(--real); padding: .2rem 0 .2rem .9rem; margin: 0; }
+.answer strong { font-variant-numeric: tabular-nums; }
+.hidden { display: none !important; }
+.linkish { font: inherit; background: none; border: none; padding: 0; color: var(--ink); text-decoration: underline; cursor: pointer; }
+.legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .88rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; touch-action: pan-y; }
+.chart text { fill: var(--muted); font-family: var(--body); font-size: 17px; font-variant-numeric: tabular-nums; }
+.chart text.ttl { fill: var(--ink); font-weight: 700; font-size: 18px; }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .6rem; }
+.readout div { border: 1px solid var(--line); border-radius: 10px; padding: .55rem .75rem; }
+.readout .num { font-family: var(--display); font-weight: 800; font-size: 1.5rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.readout .cap { font-size: .8rem; color: var(--muted); }
+.yearpick { display: flex; align-items: center; gap: .8rem; font-size: .9rem; color: var(--muted); }
+.yearpick input { flex: 1; accent-color: var(--ink); }
+.prose p, .prose ul, .prose ol { margin: 0 0 .7rem; max-width: 64ch; }
+.prose li { margin-bottom: .4rem; }
+.prose p:last-child { margin-bottom: 0; }
+details { font-size: .9rem; }
+summary { cursor: pointer; color: var(--muted); }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; margin-top: .5rem; }
+th, td { text-align: right; padding: .25rem .5rem; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+.tablewrap { overflow-x: auto; }
+.notes { font-size: .88rem; color: var(--muted); }
+footer { font-size: .85rem; color: var(--muted); }
+@media (max-width: 560px) { .card { padding: 1.1rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">A companion to <em>A Sociology Experiment</em>, Chapter 13: Deviance · By Gwen Sharp · <a href="https://x.com/gsharpokie">@gsharpokie</a></div>
+    <h1>Is Crime Up?</h1>
+    <p class="lede">Every year, Gallup asks Americans whether there’s more crime in the country than there was a year ago. Before you see what they said, and what actually happened, make three guesses.</p>
+  </header>
+
+  <section class="card" id="g1" aria-live="polite">
+    <div class="step">Guess 1 of 3</div>
+    <p class="q">Compared with 1993, is violent crime in the U.S. today higher, lower, or about the same?</p>
+    <div class="choices" id="c1">
+      <button data-v="higher">Higher</button><button data-v="same">About the same</button><button data-v="lower">Lower</button>
+    </div>
+    <p class="answer hidden" id="a1"></p>
+  </section>
+
+  <section class="card" id="g2" aria-live="polite">
+    <div class="step">Guess 2 of 3</div>
+    <p class="q">In 2023, what percentage of Americans said there was more crime in the U.S. than a year earlier?</p>
+    <label for="s2" class="step" style="text-transform:none;letter-spacing:0">Your guess</label>
+    <div class="guess-row"><input type="range" id="s2" min="0" max="100" value="50"><output id="v2" class="guess-val" for="s2">50%</output></div>
+    <div class="actions"><button class="primary" id="b2">Lock in my guess</button></div>
+    <p class="answer hidden" id="a2"></p>
+  </section>
+
+  <section class="card" id="g3" aria-live="polite">
+    <div class="step">Guess 3 of 3</div>
+    <p class="q">Are people more likely to say crime is rising in the country as a whole, or in their own area?</p>
+    <div class="choices" id="c3">
+      <button data-v="nation">The country</button><button data-v="same">About the same</button><button data-v="local">Their own area</button>
+    </div>
+    <p class="answer hidden" id="a3"></p>
+  </section>
+
+  <p class="lede" id="gate">The charts appear after your third guess. <button class="linkish" id="skip">Skip the guesses</button></p>
+
+  <section class="card after hidden" aria-labelledby="chartHead">
+    <h2 id="chartHead">What people said, and what happened</h2>
+    <div class="legend" aria-hidden="true">
+      <span><svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="var(--said)" stroke-width="3"/></svg>More crime in the U.S.</span>
+      <span><svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="var(--said-soft)" stroke-width="3" stroke-dasharray="5 4"/></svg>More crime in my area</span>
+      <span><svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="var(--real)" stroke-width="3"/></svg>Violent victimization</span>
+    </div>
+    <div class="chart" id="chart"></div>
+    <div class="yearpick"><label for="yr">Pick a year</label><input type="range" id="yr" min="1989" max="2025" value="1993"></div>
+    <div class="readout" id="readout" aria-live="polite"></div>
+    <details>
+      <summary>Show the numbers as a table</summary>
+      <div class="tablewrap"><table id="tbl"></table></div>
+    </details>
+  </section>
+
+  <section class="card prose after hidden" aria-labelledby="ctx">
+    <h2 id="ctx">The fuller picture</h2>
+    <p><strong>Crime fell a lot, but not every year.</strong> The violent victimization rate dropped about 71% from 1993 to 2024. It also bounced around: it rose from 2021 to 2022, and homicides jumped nearly 30% in 2020, the largest one-year increase the FBI has recorded.</p>
+    <p><strong>The latest numbers are the lowest in decades.</strong> In 2025, the FBI reported a murder rate of 4.1 per 100,000 people, tied with 1955 and 1956 for the lowest since national tracking began in 1900. Violent crime overall fell 9.3% from 2024. Preliminary survey estimates from the Bureau of Justice Statistics also show serious violent victimization dropping 25% in 2025.</p>
+    <p><strong>Perceptions caught up a little.</strong> In 2025, 49% of Americans said there was more crime in the U.S. than a year earlier, the lowest share since 2001. Republicans’ views changed most: 90% said crime was rising in 2024, compared with 54% in 2025.</p>
+    <h3>Talk about it</h3>
+    <ol>
+      <li>Gallup has found that most Americans say crime is rising in almost every year it has asked, including years when crime fell sharply. Where do people get their sense of how much crime there is?</li>
+      <li>Why might people say crime is rising in the country but not in their own area? What do they know about their own area that they don’t know about the country?</li>
+      <li>Psychologists call our tendency to judge how common something is by how easily examples come to mind the “availability heuristic.” How might news coverage and social media affect that?</li>
+      <li>Who benefits when people believe crime is rising? Think about politicians, media outlets, and businesses that sell security products.</li>
+      <li>The victimization survey asks people directly whether they were victims, including crimes never reported to police. Why might that give a different picture than police reports?</li>
+    </ol>
+  </section>
+
+  <section class="notes prose" aria-labelledby="about">
+    <h3 id="about">About the data</h3>
+    <p><strong>What people said:</strong> Gallup’s annual Crime survey, which asks “Is there more crime in the U.S. than there was a year ago, or less?” (since 1989) and the same question about “your area.” Gallup didn’t ask every year, so the lines skip some years. The 2025 survey was conducted by phone October 1–16, 2025, with 1,000 U.S. adults (margin of error ±4 points).</p>
+    <p><strong>What happened:</strong> the Bureau of Justice Statistics’ National Crime Victimization Survey (NCVS), which interviews about 240,000 people a year and counts violent crimes against people 12 and older, whether or not they were reported to police. It covers rape or sexual assault, robbery, aggravated assault, and simple assault, but not homicide, since victims can’t be interviewed. BJS says 2006 shouldn’t be compared with other years, so it’s left out. BJS redesigned the survey starting in 2024; the 2025 estimates come from the new version and aren’t comparable to this line, so the chart ends in 2024.</p>
+    <p><strong>Sources:</strong> Gallup, <a href="https://news.gallup.com/poll/697124/crime-seen-less-serious-second-straight-year.aspx">“Crime Seen as Less Serious for Second Straight Year”</a> (2025). Bureau of Justice Statistics, <a href="https://bjs.ojp.gov/document/cv24.pdf"><em>Criminal Victimization, 2024</em></a> (NCJ 310547, 2025), appendix table 1, and <a href="https://bjs.ojp.gov/library/publications/preliminary-victimization-estimates-ncvs-2025">Preliminary Victimization Estimates from the NCVS, 2025</a> (2026). FBI 2025 figures as reported by the Associated Press, <a href="https://wtop.com/national/2026/08/homicides-dropped-18-1-in-2025-to-the-lowest-rate-since-1956-fbi-says/">“Homicides Dropped 18.1% in 2025 to the Lowest Rate since 1956, FBI Says”</a> (August 14, 2026).</p>
+    <h3>How to cite this page</h3>
+    <p>Sharp, Gwen. 2026. “Is Crime Up?” <a href="https://gsharpokie.github.io/crime/">https://gsharpokie.github.io/crime/</a></p>
+    <p>Spot an error? <a href="https://github.com/gsharpokie/crime/issues/new">Suggest a correction</a> (needs a free GitHub account).</p>
+  </section>
+
+  <footer>Created by Gwen Sharp (<a href="https://x.com/gsharpokie">@gsharpokie</a>). Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.</footer>
+</div>
+
+<script>
+// Gallup: % saying more crime than a year ago (national since 1989; local from 2000). Years not asked are missing.
+const NAT = {1989:84,1990:84,1992:89,1993:87,1996:71,1997:64,1998:52,2000:47,2001:41,2002:62,2003:60,2004:53,2005:67,2006:68,2007:71,2008:67,2009:74,2010:66,2011:68,2013:64,2014:63,2015:70,2016:70,2017:68,2018:60,2019:64,2020:78,2021:74,2022:78,2023:77,2024:64,2025:49};
+const LOC = {2000:34,2001:26,2002:37,2003:40,2004:37,2005:47,2006:51,2007:51,2008:44,2009:51,2010:49,2011:48,2013:41,2014:44,2015:46,2016:45,2017:40,2018:39,2019:43,2020:38,2021:51,2022:56,2023:55,2024:49,2025:30};
+// BJS NCVS violent victimization rate per 1,000 persons age 12+ (legacy series; 2006 not comparable, omitted)
+const NCVS = {1993:79.8,1994:80.0,1995:70.7,1996:64.7,1997:61.1,1998:54.1,1999:47.2,2000:37.5,2001:32.6,2002:32.1,2003:32.1,2004:27.8,2005:28.4,2007:27.2,2008:25.3,2009:22.3,2010:19.3,2011:22.6,2012:26.1,2013:23.2,2014:20.1,2015:18.6,2016:19.7,2017:20.6,2018:23.2,2019:21.0,2020:16.4,2021:16.5,2022:23.5,2023:22.5,2024:23.3};
+
+const $ = id => document.getElementById(id);
+let done = 0;
+function showAll() { document.querySelectorAll(".after").forEach(e => e.classList.remove("hidden")); $("gate").classList.add("hidden"); }
+function answered() { if (++done >= 3) showAll(); }
+const Y0 = 1989, Y1 = 2025;
+
+// Summary numbers computed from the data so they stay right if the data change
+const since93 = Object.keys(NAT).map(Number).filter(y => y >= 1993);
+const majority = since93.filter(y => NAT[y] > 50).length;
+const both = Object.keys(LOC).map(Number).filter(y => NAT[y] != null);
+const avgGap = Math.round(both.reduce((s, y) => s + NAT[y] - LOC[y], 0) / both.length);
+const minGap = Math.min(...both.map(y => NAT[y] - LOC[y]));
+const drop = Math.round((1 - NCVS[2024] / NCVS[1993]) * 100);
+
+function choose(groupId, ansId, correct, text) {
+  const btns = document.querySelectorAll(`#${groupId} button`);
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => { x.setAttribute("aria-pressed", x === b); x.disabled = true; });
+    const right = b.dataset.v === correct;
+    $(ansId).innerHTML = (right ? "<strong>Right.</strong> " : "<strong>Not quite.</strong> ") + text;
+    $(ansId).classList.remove("hidden"); answered();
+  }));
+}
+choose("c1", "a1", "lower", `Violent crime is much lower. The rate of violent victimization fell from <strong>${NCVS[1993]}</strong> per 1,000 people in 1993 to <strong>${NCVS[2024]}</strong> in 2024, a drop of about <strong>${drop}%</strong>.`);
+choose("c3", "a3", "nation", `In every Gallup survey since 2000, more people said crime was rising in the country than in their own area, by <strong>${avgGap} points</strong> on average and never less than ${minGap}.`);
+
+$("s2").addEventListener("input", e => $("v2").textContent = e.target.value + "%");
+$("b2").addEventListener("click", () => {
+  const g = +$("s2").value; $("s2").disabled = true; $("b2").disabled = true;
+  $("a2").innerHTML = `<strong>${NAT[2023]}%</strong> said there was more crime. You guessed ${g}%. That wasn’t unusual: in <strong>${majority} of the ${since93.length}</strong> Gallup surveys since 1993, most Americans said crime was rising.`;
+  $("a2").classList.remove("hidden"); answered();
+});
+
+// Chart: two panels on a shared timeline
+const W = 640, L = 56, R = 16, PH = 170, GAP = 64, TOP = 32;
+const x = y => L + (y - Y0) * (W - L - R) / (Y1 - Y0);
+const yA = v => TOP + PH - v / 100 * PH;           // percent panel
+const B0 = TOP + PH + GAP;
+const yB = v => B0 + PH - v / 90 * PH;              // NCVS panel, 0-90
+const H = B0 + PH + 34;
+
+function path(obj, fy) {
+  // break the line where a year is missing
+  const ys = Object.keys(obj).map(Number).sort((a, b) => a - b);
+  let d = "", prev = null;
+  ys.forEach(y => { d += (prev !== null && y - prev === 1 ? "L" : "M") + x(y).toFixed(1) + " " + fy(obj[y]).toFixed(1) + " "; prev = y; });
+  return d;
+}
+function dots(obj, fy, color, r) {
+  return Object.keys(obj).map(Number).map(y => `<circle cx="${x(y)}" cy="${fy(obj[y])}" r="${r}" fill="${color}"/>`).join("");
+}
+function grid(fy, vals, top, fmt) {
+  return vals.map(v => `<line x1="${L}" x2="${W - R}" y1="${fy(v)}" y2="${fy(v)}" stroke="var(--line)"/><text x="${L - 6}" y="${fy(v) + 4}" text-anchor="end">${fmt(v)}</text>`).join("");
+}
+function drawChart() {
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Two charts on a shared timeline from 1989 to 2025. Top: the share of Americans saying there is more crime in the U.S. than a year ago stays above 50% in most years, while the share saying so about their own area is lower. Bottom: the violent victimization rate falls from about 80 per 1,000 in 1993 to about 23 in 2024.">`;
+  s += `<text class="ttl" x="${L}" y="${TOP - 10}">Percent saying there’s more crime than a year ago</text>`;
+  s += grid(yA, [0, 25, 50, 75, 100], TOP, v => v + "%");
+  s += `<path d="${path(NAT, yA)}" fill="none" stroke="var(--said)" stroke-width="3" stroke-linejoin="round"/>` + dots(NAT, yA, "var(--said)", 2.6);
+  s += `<path d="${path(LOC, yA)}" fill="none" stroke="var(--said-soft)" stroke-width="3" stroke-dasharray="6 4" stroke-linejoin="round"/>` + dots(LOC, yA, "var(--said-soft)", 2.2);
+  s += `<text class="ttl" x="${L}" y="${B0 - 10}">Violent victimizations per 1,000 people age 12+</text>`;
+  s += grid(yB, [0, 30, 60, 90], B0, v => v);
+  s += `<path d="${path(NCVS, yB)}" fill="none" stroke="var(--real)" stroke-width="3" stroke-linejoin="round"/>` + dots(NCVS, yB, "var(--real)", 2.6);
+  [1990, 2000, 2010, 2020, 2025].forEach(y => s += `<text x="${x(y)}" y="${H - 6}" text-anchor="middle">${y}</text>`);
+  s += `<line id="cursor" x1="0" x2="0" y1="${TOP}" y2="${B0 + PH}" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>`;
+  s += `<g id="markers"></g></svg>`;
+  $("chart").innerHTML = s;
+  const svg = $("chart").querySelector("svg");
+  const pick = ev => {
+    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const yr = Math.max(Y0, Math.min(Y1, Math.round(Y0 + (p.x - L) / (W - L - R) * (Y1 - Y0))));
+    setYear(yr);
+  };
+  svg.addEventListener("pointermove", pick);
+  svg.addEventListener("pointerdown", pick);
+}
+function setYear(y) {
+  $("yr").value = y;
+  const c = document.getElementById("cursor"); c.setAttribute("x1", x(y)); c.setAttribute("x2", x(y));
+  let m = "";
+  if (NAT[y] != null) m += `<circle cx="${x(y)}" cy="${yA(NAT[y])}" r="6" fill="none" stroke="var(--said)" stroke-width="2.5"/>`;
+  if (LOC[y] != null) m += `<circle cx="${x(y)}" cy="${yA(LOC[y])}" r="6" fill="none" stroke="var(--said-soft)" stroke-width="2.5"/>`;
+  if (NCVS[y] != null) m += `<circle cx="${x(y)}" cy="${yB(NCVS[y])}" r="6" fill="none" stroke="var(--real)" stroke-width="2.5"/>`;
+  document.getElementById("markers").innerHTML = m;
+  const cell = (v, cap, color, unit) => `<div><div class="num" style="color:${v == null ? "var(--muted)" : color}">${v == null ? "—" : v + unit}</div><div class="cap">${cap}</div></div>`;
+  $("readout").innerHTML =
+    `<div><div class="num">${y}</div><div class="cap">Year</div></div>` +
+    cell(NAT[y], "said more crime in the U.S.", "var(--said)", "%") +
+    cell(LOC[y], "said more crime in their area", "var(--said)", "%") +
+    cell(NCVS[y], "violent victimizations per 1,000", "var(--real)", "");
+}
+function drawTable() {
+  let t = "<thead><tr><th>Year</th><th>More crime in U.S. (%)</th><th>More crime in area (%)</th><th>Violent victimizations per 1,000</th></tr></thead><tbody>";
+  for (let y = Y0; y <= Y1; y++) {
+    if (NAT[y] == null && LOC[y] == null && NCVS[y] == null) continue;
+    t += `<tr><td>${y}</td><td>${NAT[y] ?? "—"}</td><td>${LOC[y] ?? "—"}</td><td>${NCVS[y] ?? "—"}</td></tr>`;
+  }
+  $("tbl").innerHTML = t + "</tbody>";
+}
+drawChart(); drawTable(); setYear(1993);
+$("yr").addEventListener("input", e => setYear(+e.target.value));
+$("skip").addEventListener("click", showAll);
+if (location.hash === "#charts") showAll();
+</script>
+</body>
+</html>
